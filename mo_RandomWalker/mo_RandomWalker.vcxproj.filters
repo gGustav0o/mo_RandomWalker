@@ -57,6 +57,12 @@
     <Filter Include="core\app">
       <UniqueIdentifier>{aebbe8f5-0331-4fa1-8b9d-9a342c55ff41}</UniqueIdentifier>
     </Filter>
+    <Filter Include="core\enums">
+      <UniqueIdentifier>{31df8394-c224-40be-9a8d-0afd8b2345d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\qml">
+      <UniqueIdentifier>{8bfb206c-488c-4b37-8e65-a79c2d22c574}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -127,6 +133,12 @@
     <ClInclude Include="core\app\AppContext.hpp">
       <Filter>core\app</Filter>
     </ClInclude>
+    <ClInclude Include="core\enums\SeedLabel.hpp">
+      <Filter>core\enums</Filter>
+    </ClInclude>
+    <ClInclude Include="core\qml\qml_registration.hpp">
+      <Filter>core\qml</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="qml\RandomWalker.qml">
@@ -139,6 +151,9 @@
     </QtMoc>
     <QtMoc Include="core\scene\SceneManager.hpp">
       <Filter>core\scene</Filter>
+    </QtMoc>
+    <QtMoc Include="core\enums\QmlEnums.hpp">
+      <Filter>core\enums</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

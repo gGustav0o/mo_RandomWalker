@@ -3,6 +3,7 @@
 
 #include "core/app/AppContext.hpp"
 #include "core/app/connect_components.cpp"
+#include "core/qml/qml_registration.hpp"
 
 static void setup_high_dpi()
 {
@@ -16,6 +17,8 @@ int main(int argc, char* argv[])
     setup_high_dpi();
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
+
+    register_qml_types();
 
     AppContext ctx;
     ctx.engine = &engine;

@@ -115,9 +115,12 @@
     <ClInclude Include="core\algorithm\RandomWalkerAlgorithm.hpp" />
     <ClInclude Include="core\app\AppContext.hpp" />
     <ClInclude Include="core\data\ImageData.hpp" />
+    <QtMoc Include="core\enums\QmlEnums.hpp" />
+    <ClInclude Include="core\enums\SeedLabel.hpp" />
     <ClInclude Include="core\graph\PixelGraph.hpp" />
     <ClInclude Include="core\interface\RandomWalkerRunner.hpp" />
     <QtMoc Include="core\scene\SceneManager.hpp" />
+    <ClInclude Include="core\qml\qml_registration.hpp" />
     <ClInclude Include="core\segmentation\SegmentationResult.hpp" />
     <ClInclude Include="core\solver\LaplacianSolver.hpp" />
     <QtMoc Include="core\ui\ImageLoader.hpp" />

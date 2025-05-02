@@ -5,11 +5,7 @@
 #include <vector>
 
 #include "../data/ImageData.hpp"
-
-enum class SeedLabel : int {
-    Background = 0,
-    Object = 1
-};
+#include "../enums/SeedLabel.hpp"
 
 class SceneManager : public QObject
 {

@@ -33,6 +33,12 @@ void SceneManager::on_image_changed(const QImage& new_image)
 
 void SceneManager::add_rect_seed_area(const QRect& rect, SeedLabel label)
 {
+    auto& target = (label == SeedLabel::Background)
+        ? background_seeds_
+        : object_seeds_;
+
+    target.clear();
+
     for (int y = rect.top(); y <= rect.bottom(); ++y) {
         for (int x = rect.left(); x <= rect.right(); ++x) {
             add_seed(QPoint(x, y), label);
