@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/qt/qml/mo_randomwalker">
+        <file>qml/RandomWalker.qml</file>
+    </qresource>
+</RCC>
