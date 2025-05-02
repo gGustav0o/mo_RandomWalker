@@ -4,7 +4,7 @@
 #include <QQuickImageProvider>
 #include <QMutex>
 
-#include "../MetaAnnotations.hpp"
+#include "../../MetaAnnotations.hpp"
 
 class ImageProvider : public QQuickImageProvider
 {

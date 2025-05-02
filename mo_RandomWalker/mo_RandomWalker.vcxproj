@@ -67,6 +67,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>D:\Development\libs\eigen-3.4.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
@@ -98,20 +99,32 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="core\ImageLoader.cpp" />
-    <ClCompile Include="core\ImageProvider.cpp" />
-    <ClCompile Include="core\RandomWalkerAlgorithm.cpp" />
-    <ClCompile Include="core\SceneManager.cpp" />
+    <ClCompile Include="core\algorithm\RandomWalkerAlgorithm.cpp" />
+    <ClCompile Include="core\app\connect_components.cpp" />
+    <ClCompile Include="core\data\ImageData.cpp" />
+    <ClCompile Include="core\graph\PixelGraph.cpp" />
+    <ClCompile Include="core\interface\RandomWalkerRunner.cpp" />
+    <ClCompile Include="core\scene\SceneManager.cpp" />
+    <ClCompile Include="core\solver\LaplacianSolver.cpp" />
+    <ClCompile Include="core\ui\ImageLoader.cpp" />
+    <ClCompile Include="core\ui\ImageProvider.cpp" />
     <ClCompile Include="main.cpp" />
     <QtRcc Include="qml.qrc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="core\ImageProvider.hpp" />
+    <ClInclude Include="core\algorithm\RandomWalkerAlgorithm.hpp" />
+    <ClInclude Include="core\app\AppContext.hpp" />
+    <ClInclude Include="core\data\ImageData.hpp" />
+    <ClInclude Include="core\graph\PixelGraph.hpp" />
+    <ClInclude Include="core\interface\RandomWalkerRunner.hpp" />
+    <QtMoc Include="core\scene\SceneManager.hpp" />
+    <ClInclude Include="core\segmentation\SegmentationResult.hpp" />
+    <ClInclude Include="core\solver\LaplacianSolver.hpp" />
+    <QtMoc Include="core\ui\ImageLoader.hpp" />
+    <ClInclude Include="core\ui\ImageProvider.hpp" />
+    <ClInclude Include="core\utils\ImageToEigen.hpp" />
     <ClInclude Include="global.hpp" />
     <ClInclude Include="MetaAnnotations.hpp" />
-    <QtMoc Include="core\ImageLoader.hpp" />
-    <ClInclude Include="core\RandomWalkerAlgorithm.hpp" />
-    <ClInclude Include="core\SceneManager.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="qml\RandomWalker.qml" />

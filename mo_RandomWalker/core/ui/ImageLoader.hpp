@@ -4,7 +4,7 @@
 #include <QImage>
 #include <QString>
 
-#include "../MetaAnnotations.hpp"
+#include "../../MetaAnnotations.hpp"
 
 class ImageProvider;
 

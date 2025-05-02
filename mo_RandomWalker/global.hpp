@@ -60,9 +60,9 @@ struct Pure<Ret(Args...)>
     }
 
 #define DECLARE_FACTORY(ClassName) \
-    template<typename... Args> \
+    template<typename... Args>     \
     ClassName* create##ClassName(Args&&... args);
 
 #define IMPLEMENT_FACTORY(ClassName) \
-    template<typename... Args> \
+    template<typename... Args>       \
     ClassName* create##ClassName(Args&&... args) { return new ClassName(std::forward<Args>(args)...); }

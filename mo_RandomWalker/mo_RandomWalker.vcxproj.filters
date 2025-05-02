@@ -27,6 +27,36 @@
     <Filter Include="qml">
       <UniqueIdentifier>{52b08b0f-4729-478f-b942-de63da3ae3fa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="core\utils">
+      <UniqueIdentifier>{286267f3-22cf-456c-8231-99115b97a3cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\solver">
+      <UniqueIdentifier>{bf204f7b-c981-4eff-84ec-1e24006d54b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\interface">
+      <UniqueIdentifier>{97f83e4d-c766-45fa-914e-2166d0181961}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\segmentation">
+      <UniqueIdentifier>{dff894cc-ed17-41ed-9877-a33ff8e78d73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\graph">
+      <UniqueIdentifier>{d9fbbe20-4876-4ffb-9abd-b91aca3cdf05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\algorithm">
+      <UniqueIdentifier>{28844eca-48b4-4c6d-bf5a-3bfe858f50ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\data">
+      <UniqueIdentifier>{4decab99-d418-4243-962b-09b3b4f9f00f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\scene">
+      <UniqueIdentifier>{0768b22b-e3c9-438b-8963-17e89dfec26b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\ui">
+      <UniqueIdentifier>{3c1882f8-d039-41a0-8616-6be19e3d1bcc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\app">
+      <UniqueIdentifier>{aebbe8f5-0331-4fa1-8b9d-9a342c55ff41}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -35,34 +65,67 @@
     <QtRcc Include="qml.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
-    <ClCompile Include="core\ImageLoader.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="core\solver\LaplacianSolver.cpp">
+      <Filter>core\solver</Filter>
     </ClCompile>
-    <ClCompile Include="core\RandomWalkerAlgorithm.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="core\interface\RandomWalkerRunner.cpp">
+      <Filter>core\interface</Filter>
     </ClCompile>
-    <ClCompile Include="core\SceneManager.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="core\graph\PixelGraph.cpp">
+      <Filter>core\graph</Filter>
     </ClCompile>
-    <ClCompile Include="core\ImageProvider.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="core\algorithm\RandomWalkerAlgorithm.cpp">
+      <Filter>core\algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="core\data\ImageData.cpp">
+      <Filter>core\data</Filter>
+    </ClCompile>
+    <ClCompile Include="core\ui\ImageLoader.cpp">
+      <Filter>core\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="core\ui\ImageProvider.cpp">
+      <Filter>core\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="core\scene\SceneManager.cpp">
+      <Filter>core\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="core\app\connect_components.cpp">
+      <Filter>core\app</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="core\RandomWalkerAlgorithm.hpp">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="core\SceneManager.hpp">
-      <Filter>core</Filter>
-    </ClInclude>
     <ClInclude Include="MetaAnnotations.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="global.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\ImageProvider.hpp">
-      <Filter>core</Filter>
+    <ClInclude Include="core\utils\ImageToEigen.hpp">
+      <Filter>core\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="core\solver\LaplacianSolver.hpp">
+      <Filter>core\solver</Filter>
+    </ClInclude>
+    <ClInclude Include="core\interface\RandomWalkerRunner.hpp">
+      <Filter>core\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="core\segmentation\SegmentationResult.hpp">
+      <Filter>core\segmentation</Filter>
+    </ClInclude>
+    <ClInclude Include="core\graph\PixelGraph.hpp">
+      <Filter>core\graph</Filter>
+    </ClInclude>
+    <ClInclude Include="core\algorithm\RandomWalkerAlgorithm.hpp">
+      <Filter>core\algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="core\data\ImageData.hpp">
+      <Filter>core\data</Filter>
+    </ClInclude>
+    <ClInclude Include="core\ui\ImageProvider.hpp">
+      <Filter>core\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="core\app\AppContext.hpp">
+      <Filter>core\app</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -71,8 +134,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="core\ImageLoader.hpp">
-      <Filter>core</Filter>
+    <QtMoc Include="core\ui\ImageLoader.hpp">
+      <Filter>core\ui</Filter>
+    </QtMoc>
+    <QtMoc Include="core\scene\SceneManager.hpp">
+      <Filter>core\scene</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

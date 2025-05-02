@@ -1,29 +1,35 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include <QQmlContext>
 
-#include "core/ImageLoader.hpp"
-#include "core/ImageProvider.hpp"
+#include "core/app/AppContext.hpp"
+#include "core/app/connect_components.cpp"
 
-int main(int argc, char *argv[])
+static void setup_high_dpi()
 {
 #if defined(Q_OS_WIN) && QT_VERSION_CHECK(5, 6, 0) <= QT_VERSION && QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
+}
 
+int main(int argc, char* argv[])
+{
+    setup_high_dpi();
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
 
-    auto* provider = new ImageProvider();
-    engine.addImageProvider("loader", provider);
+    AppContext ctx;
+    ctx.engine = &engine;
+    ctx.image_provider = new ImageProvider();
+    ctx.scene_manager = new SceneManager();
+    ctx.image_loader = new ImageLoader();
+    ctx.image_loader->set_image_provider(ctx.image_provider);
 
-    ImageLoader loader;
-    loader.set_image_provider(provider);
+    ctx.engine->addImageProvider("loader", ctx.image_provider);
+    connect_components(ctx);
+    register_qml_context(ctx);
 
-    engine.rootContext()->setContextProperty("ImageLoader", &loader);
-
-    engine.load(QUrl(QStringLiteral("qrc:/qt/qml/mo_randomwalker/qml/RandomWalker.qml")));
-    if (engine.rootObjects().isEmpty())
+    ctx.engine->load(QUrl(QStringLiteral("qrc:/qt/qml/mo_randomwalker/qml/RandomWalker.qml")));
+    if (ctx.engine->rootObjects().isEmpty())
         return -1;
 
     return app.exec();
