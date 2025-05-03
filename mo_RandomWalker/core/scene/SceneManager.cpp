@@ -60,3 +60,21 @@ std::vector<QPoint> SceneManager::object_seeds() const noexcept
 {
     return object_seeds_;
 }
+
+QImage SceneManager::segmentation_result() const noexcept
+{
+    qDebug() << "[C++] segmentation_result() called!";
+	return segmentation_result_;
+}
+
+
+void SceneManager::set_segmentation_result(const QImage& result)
+{
+    segmentation_result_ = result;
+
+    qDebug() << "result size:" << result.size();
+    qDebug() << "format:" << result.format();
+    qDebug() << "pixel at (0,0):" << result.pixelColor(0, 0);
+
+    emit segmentationResultChanged();
+}

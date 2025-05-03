@@ -29,7 +29,7 @@ ImageLoader::ImageLoader(QObject* parent)
     emit image_changed();
     return true;
 }
-_impure_(QImage ImageLoader::image())
+[[nodiscard]] QImage ImageLoader::image() noexcept
 {
     return image_;
 }

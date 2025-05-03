@@ -37,7 +37,7 @@
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
     <QtInstall>6.8.1_msvc2022_64</QtInstall>
-    <QtModules>core;gui;qml;quick;quickcontrols2;quickdialogs2;quicklayouts;qmltest;quickwidgets;quicktimeline</QtModules>
+    <QtModules>core;gui;qml;quick;quickcontrols2;quickdialogs2;quicklayouts;qmltest;opengl;quickwidgets;quicktimeline;shadertools;uitools;uiplugin</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
     <QtQMLDebugEnable>true</QtQMLDebugEnable>
   </PropertyGroup>
@@ -108,6 +108,7 @@
     <ClCompile Include="core\solver\LaplacianSolver.cpp" />
     <ClCompile Include="core\ui\ImageLoader.cpp" />
     <ClCompile Include="core\ui\ImageProvider.cpp" />
+    <ClCompile Include="core\ui\SegmentationImageProvider.cpp" />
     <ClCompile Include="main.cpp" />
     <QtRcc Include="qml.qrc" />
   </ItemGroup>
@@ -118,13 +119,14 @@
     <QtMoc Include="core\enums\QmlEnums.hpp" />
     <ClInclude Include="core\enums\SeedLabel.hpp" />
     <ClInclude Include="core\graph\PixelGraph.hpp" />
-    <ClInclude Include="core\interface\RandomWalkerRunner.hpp" />
+    <QtMoc Include="core\interface\RandomWalkerRunner.hpp" />
     <QtMoc Include="core\scene\SceneManager.hpp" />
     <ClInclude Include="core\qml\qml_registration.hpp" />
     <ClInclude Include="core\segmentation\SegmentationResult.hpp" />
     <ClInclude Include="core\solver\LaplacianSolver.hpp" />
     <QtMoc Include="core\ui\ImageLoader.hpp" />
     <ClInclude Include="core\ui\ImageProvider.hpp" />
+    <ClInclude Include="core\ui\SegmentationImageProvider.hpp" />
     <ClInclude Include="core\utils\ImageToEigen.hpp" />
     <ClInclude Include="global.hpp" />
     <ClInclude Include="MetaAnnotations.hpp" />

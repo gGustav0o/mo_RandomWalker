@@ -32,6 +32,7 @@ Window {
                     hasUserImage = false
                     objectRect = Qt.rect(0, 0, 0, 0)
                     backgroundRect = Qt.rect(0, 0, 0, 0)
+                    segmentationOverlay.source = ""
                 }
             }
             ListModel {
@@ -58,8 +59,8 @@ Window {
                 text: "Run Algorithm"
                 enabled: canRun
                 onClicked: {
-                    if (imagePath !== "")
-                        coreController.run_algorithm()
+                    if (canRun)
+                        onClicked: randomWalkerRunner.start_segmentation()
                 }
             }
         }
@@ -78,6 +79,24 @@ Window {
                 cache: false
                 visible: true
                 source: loaderSource
+            }
+            Image {
+                id: segmentationOverlay
+                //anchors.fill: imageDisplay
+                fillMode: Image.Stretch
+                anchors.fill: parent
+                z: 100
+                source: "image://segmentation/mask"
+                visible: SceneManager.segmentationResult.width > 0
+            }
+            Connections {
+                target: SceneManager
+                onSegmentationResultChanged: {
+                    // принудительно обновляем
+                    segmentationOverlay.source = ""
+                    segmentationOverlay.source = "image://segmentation/mask?" + Date.now()
+                    segmentationOverlay.visible = true
+                }
             }
             Rectangle {
                 id: backgroundSeedRect
@@ -170,6 +189,8 @@ Window {
                     const rw = (x2 - x1) * scaleX;
                     const rh = (y2 - y1) * scaleY;
                 
+                    console.log("current start/end:", startX, startY, currentX, currentY)
+                    console.log("rect:", rx, ry, rw, rh)
                     const newRect = Qt.rect(rx, ry, rw, rh);
                     SceneManager.add_rect_seed_area(newRect, selectedLabel)
                 }
@@ -192,7 +213,7 @@ Window {
     FileDialog {
         id: fileDialog
         title: "Choose an image"
-        currentFolder: StandardPaths.pictures
+        //currentFolder: StandardPaths.pictures
         nameFilters: ["Images (*.png *.jpg *.jpeg *.bmp)"]
         onAccepted: {
             ImageLoader.load_image(selectedFile)

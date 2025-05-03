@@ -19,7 +19,7 @@ public:
 
     Q_INVOKABLE [[nodiscard]] bool load_image(const QString& path) noexcept;
     Q_INVOKABLE void clear_image() noexcept;
-    _impure_(QImage image());
+    [[nodiscard]] QImage image() noexcept;
     void set_image_provider(_In_opt_ ImageProvider* provider) noexcept;
 
 signals:

@@ -8,7 +8,7 @@
 #define _likely_(x)        __builtin_expect(!!(x), 1)
 #define _unlikely_(x)      __builtin_expect(!!(x), 0)
 #elif defined(_MSC_VER)    
-#define _pure_(decl)       [[nodiscard]] inline static constexpr decl noexcept
+#define _pure_(decl)       [[nodiscard]] static constexpr decl noexcept
 #define _cold_             
 #define _flatten_          
 #define _always_inline_    __forceinline
@@ -24,8 +24,8 @@
 #endif
 
 
-#define _impure_(decl)             [[nodiscard]] decl noexcept
-#define _impure_throwing_(decl)    [[nodiscard]] decl
+#define _impure_(decl)             [[nodiscard]] static decl noexcept
+#define _impure_throwing_(decl)    [[nodiscard]] static decl
 #define _fx_(decl)                 static constexpr decl noexcept
 #define _fx_throwing_(decl)        static constexpr decl
 #define _consteval_                consteval

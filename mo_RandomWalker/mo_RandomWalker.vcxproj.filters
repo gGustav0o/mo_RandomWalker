@@ -98,6 +98,9 @@
     <ClCompile Include="core\app\connect_components.cpp">
       <Filter>core\app</Filter>
     </ClCompile>
+    <ClCompile Include="core\ui\SegmentationImageProvider.cpp">
+      <Filter>core\ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MetaAnnotations.hpp">
@@ -111,9 +114,6 @@
     </ClInclude>
     <ClInclude Include="core\solver\LaplacianSolver.hpp">
       <Filter>core\solver</Filter>
-    </ClInclude>
-    <ClInclude Include="core\interface\RandomWalkerRunner.hpp">
-      <Filter>core\interface</Filter>
     </ClInclude>
     <ClInclude Include="core\segmentation\SegmentationResult.hpp">
       <Filter>core\segmentation</Filter>
@@ -139,6 +139,9 @@
     <ClInclude Include="core\qml\qml_registration.hpp">
       <Filter>core\qml</Filter>
     </ClInclude>
+    <ClInclude Include="core\ui\SegmentationImageProvider.hpp">
+      <Filter>core\ui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="qml\RandomWalker.qml">
@@ -154,6 +157,9 @@
     </QtMoc>
     <QtMoc Include="core\enums\QmlEnums.hpp">
       <Filter>core\enums</Filter>
+    </QtMoc>
+    <QtMoc Include="core\interface\RandomWalkerRunner.hpp">
+      <Filter>core\interface</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

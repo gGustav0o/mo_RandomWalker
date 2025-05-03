@@ -25,9 +25,12 @@ int main(int argc, char* argv[])
     ctx.image_provider = new ImageProvider();
     ctx.scene_manager = new SceneManager();
     ctx.image_loader = new ImageLoader();
+	ctx.random_walker_runner = new RandomWalkerRunner(ctx.scene_manager);
+	ctx.segmentation_image_provider = new SegmentationImageProvider(ctx.scene_manager);
     ctx.image_loader->set_image_provider(ctx.image_provider);
 
     ctx.engine->addImageProvider("loader", ctx.image_provider);
+	ctx.engine->addImageProvider("segmentation", ctx.segmentation_image_provider);
     connect_components(ctx);
     register_qml_context(ctx);
 
