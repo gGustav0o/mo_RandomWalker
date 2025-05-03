@@ -30,9 +30,19 @@ Window {
                 onClicked: {
                     ImageLoader.clear_image()
                     hasUserImage = false
-                    objectRect = Qt.rect(0, 0, 0, 0)
-                    backgroundRect = Qt.rect(0, 0, 0, 0)
                     segmentationOverlay.source = ""
+                    SceneManager.clear_seeds()
+                    backgroundRects.clear()
+                    objectRects.clear()
+                }
+            }
+            Button {
+                text: "Clear seeds"
+                onClicked: {
+                    segmentationOverlay.source = ""
+                    SceneManager.clear_seeds()
+                    backgroundRects.clear()
+                    objectRects.clear()
                 }
             }
             ListModel {
@@ -91,38 +101,47 @@ Window {
             Connections {
                 target: SceneManager
                 onSegmentationResultChanged: {
-                    // принудительно обновляем
                     segmentationOverlay.source = ""
                     segmentationOverlay.source = "image://segmentation/mask?" + Date.now()
                     segmentationOverlay.visible = true
-                    backgroundSeedRect.visible = false
-                    objectSeedRect.visible = false
                 }
             }
-            Rectangle {
-                id: backgroundSeedRect
-                z: 1
-                color: "#440000FF"
-                border.color: "blue"
-                border.width: 1
-                visible: backgroundRect.width > 0
-                x: backgroundRect.x
-                y: backgroundRect.y
-                width: backgroundRect.width
-                height: backgroundRect.height
+            Item {
+                id: backgroundSeedLayer
+                anchors.fill: imageDisplay
+                z: 10
+            
+                Repeater {
+                    model: backgroundRects
+                    delegate: Rectangle {
+                        color: "#440000FF"
+                        border.color: "blue"
+                        border.width: 1
+                        x: model.x
+                        y: model.y
+                        width: model.width
+                        height: model.height
+                    }
+                }
             }
             
-            Rectangle {
-                id: objectSeedRect
-                z: 1
-                color: "#44FF0000"
-                border.color: "red"
-                border.width: 1
-                visible: objectRect.width > 0
-                x: objectRect.x
-                y: objectRect.y
-                width: objectRect.width
-                height: objectRect.height
+            Item {
+                id: objectSeedLayer
+                anchors.fill: imageDisplay
+                z: 10
+            
+                Repeater {
+                    model: objectRects
+                    delegate: Rectangle {
+                        color: "#44FF0000"
+                        border.color: "red"
+                        border.width: 1
+                        x: model.x
+                        y: model.y
+                        width: model.width
+                        height: model.height
+                    }
+                }
             }
             MouseArea {
                 id: mouseArea
@@ -145,12 +164,6 @@ Window {
                     currentX = startX
                     currentY = startY
                     drawing = true
-
-                    if (selectedLabel === SeedLabel.Background) {
-                        backgroundRect = Qt.rect(startX, startY, 0, 0)
-                    } else {
-                        objectRect = Qt.rect(startX, startY, 0, 0)
-                    }
                 }
 
                 onPositionChanged: function(mouse) {
@@ -179,11 +192,29 @@ Window {
                     const x2 = Math.min(imageX + imageW, Math.max(startX, currentX));
                     const y2 = Math.min(imageY + imageH, Math.max(startY, currentY));
 
-                    const currentRect = Qt.rect(x1, y1, x2 - x1, y2 - y1)
-                    if (selectedLabel === SeedLabel.Background)
-                        backgroundRect = currentRect
-                    else
-                        objectRect = currentRect
+                    const topLeft = imageDisplay.mapFromItem(mouseArea, x1, y1)
+                    const bottomRight = imageDisplay.mapFromItem(mouseArea, x2, y2)
+
+                    const finalX = topLeft.x
+                    const finalY = topLeft.y
+                    const finalWidth = bottomRight.x - topLeft.x
+                    const finalHeight = bottomRight.y - topLeft.y
+
+                    if (selectedLabel === SeedLabel.Background) {
+                        backgroundRects.append({
+                            "x": finalX,
+                            "y": finalY,
+                            "width": finalWidth,
+                            "height": finalHeight
+                        })
+                    } else {
+                        objectRects.append({
+                            "x": finalX,
+                            "y": finalY,
+                            "width": finalWidth,
+                            "height": finalHeight
+                        })
+                    }
                 
                     const rx = (x1 - imageX) * scaleX;
                     const ry = (y1 - imageY) * scaleY;
@@ -223,11 +254,11 @@ Window {
     property bool hasUserImage: false
     property int selectedLabel: SeedLabel.Object
     property string loaderSource: "image://loader/preview"
-    property rect objectRect: Qt.rect(0, 0, 0, 0)
-    property rect backgroundRect: Qt.rect(0, 0, 0, 0)
+    ListModel { id: backgroundRects }
+    ListModel { id: objectRects }
     readonly property bool canRun: hasUserImage &&
-                               backgroundRect.width > 0 && backgroundRect.height > 0 &&
-                               objectRect.width > 0 && objectRect.height > 0
+                               backgroundRects.count > 0 &&
+                               objectRects.count > 0
 
 
     Connections {
