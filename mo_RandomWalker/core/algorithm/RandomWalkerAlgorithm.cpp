@@ -130,7 +130,11 @@ namespace algorithm
         {
             Eigen::SimplicialLLT<SparseMatrix<double>> solver;
             solver.compute(L_uu);
-            return solver.solve(-L_ul * x_l);
+            if (solver.info() != Eigen::Success) {
+                qDebug() << "[RW] ERROR: Failed to decompose L_uu!";
+            }
+            auto result = solver.solve(-L_ul * x_l);
+            return result;
         }
 
         [[nodiscard]] Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic> assemble_segmentation(
@@ -201,6 +205,9 @@ namespace algorithm
         const auto [L_uu, L_ul] = split_laplacian(L, labeled_indices, label_index, unlabeled_index);
         const VectorXd x_l = build_rhs_vector(labels, label_vec, width);
         const VectorXd x_u = solve_sparse_system(L_uu, L_ul, x_l);
+        if (!x_u.allFinite()) {
+            qDebug() << "[RW] ERROR: x_u contains invalid values!";
+        }
 
         const double min_val = x_u.minCoeff();
         const double max_val = x_u.maxCoeff();

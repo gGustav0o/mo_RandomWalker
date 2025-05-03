@@ -2,13 +2,14 @@
 
 #include <Eigen/Sparse>
 #include <cmath>
+#include <optional>
 
 namespace graph
 {
 
     namespace
     {
-        constexpr double kBeta = 90.0; // чувствительность к градиентам
+        constexpr double kBeta = 0.01;
 
         enum class Direction {
             Right,
@@ -40,10 +41,26 @@ namespace graph
             return y >= 0 && y < height && x >= 0 && x < width;
         }
 
-        inline _impure_(double compute_weight(uint8_t g1, uint8_t g2))
+        _impure_(double compute_intensity_variance(const Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic>& image))
+        {
+            Eigen::MatrixXd image_d = image.cast<double>();
+
+            double mean = image_d.mean();
+            double variance = (image_d.array() - mean).square().mean();
+
+            return variance;
+        }
+
+        inline _impure_(double compute_weight(uint8_t g1, uint8_t g2, std::optional<double> sigma = std::nullopt))
         {
             const double diff = static_cast<double>(g1) - static_cast<double>(g2);
-            return std::exp(-kBeta * diff * diff);
+            //return std::exp(-kBeta * diff * diff);
+
+            const double normalized = sigma.has_value()
+                ? diff / (*sigma)
+                : diff;
+
+            return std::exp(-kBeta * normalized * normalized);
         }
 
         _impure_(Eigen::SparseMatrix<double> build_laplacian(const Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic>& image))
@@ -51,6 +68,7 @@ namespace graph
             const int height = static_cast<int>(image.rows());
             const int width = static_cast<int>(image.cols());
             const int n = width * height;
+			const auto sigma = std::make_optional(std::sqrt(compute_intensity_variance(image)));
 
             auto index_at = [width](int row, int col) constexpr noexcept -> int {
                 return row * width + col;
@@ -79,7 +97,7 @@ namespace graph
                         const int j = index_at(ny, nx);
                         const uint8_t gj = image(ny, nx);
 
-                        const double w = compute_weight(gi, gj);
+                        const double w = compute_weight(gi, gj, sigma);
                         weight_triplets.emplace_back(i, j, -w);
                         degrees[i] += w;
                     }

@@ -29,7 +29,7 @@ ImageLoader::ImageLoader(QObject* parent)
     emit image_changed();
     return true;
 }
-[[nodiscard]] QImage ImageLoader::image() noexcept
+[[nodiscard]] QImage ImageLoader::image() const noexcept
 {
     return image_;
 }
@@ -40,6 +40,16 @@ void ImageLoader::clear_image() noexcept
     if (provider_)
         provider_->set_image(image_);
     emit image_changed();
+}
+
+int ImageLoader::image_width() const noexcept
+{
+    return image_.width();
+}
+
+int ImageLoader::image_height() const noexcept
+{
+    return image_.height();
 }
 
 void ImageLoader::set_image_provider(ImageProvider* provider) noexcept

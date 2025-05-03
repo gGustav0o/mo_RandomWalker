@@ -83,11 +83,10 @@ Window {
             Image {
                 id: segmentationOverlay
                 //anchors.fill: imageDisplay
-                fillMode: Image.Stretch
-                anchors.fill: parent
-                z: 100
+                //fillMode: Image.Stretch
+                anchors.fill: imageDisplay
                 source: "image://segmentation/mask"
-                visible: SceneManager.segmentationResult.width > 0
+                //visible: SceneManager.segmentationResult.width > 0
             }
             Connections {
                 target: SceneManager
@@ -96,6 +95,8 @@ Window {
                     segmentationOverlay.source = ""
                     segmentationOverlay.source = "image://segmentation/mask?" + Date.now()
                     segmentationOverlay.visible = true
+                    backgroundSeedRect.visible = false
+                    objectSeedRect.visible = false
                 }
             }
             Rectangle {
@@ -170,8 +171,8 @@ Window {
                     const imageW = imageDisplay.width;
                     const imageH = imageDisplay.height;
                 
-                    const scaleX = ImageLoader.image.width / imageW;
-                    const scaleY = ImageLoader.image.height / imageH;
+                    const scaleX = ImageLoader.imageWidth / imageW;
+                    const scaleY = ImageLoader.imageHeight / imageH;
                 
                     const x1 = Math.max(imageX, Math.min(startX, currentX));
                     const y1 = Math.max(imageY, Math.min(startY, currentY));
@@ -189,8 +190,6 @@ Window {
                     const rw = (x2 - x1) * scaleX;
                     const rh = (y2 - y1) * scaleY;
                 
-                    console.log("current start/end:", startX, startY, currentX, currentY)
-                    console.log("rect:", rx, ry, rw, rh)
                     const newRect = Qt.rect(rx, ry, rw, rh);
                     SceneManager.add_rect_seed_area(newRect, selectedLabel)
                 }
