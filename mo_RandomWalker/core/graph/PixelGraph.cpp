@@ -9,7 +9,7 @@ namespace graph
 
     namespace
     {
-        constexpr double kBeta = 0.01;
+        constexpr double kBeta = 0.001;
 
         enum class Direction {
             Right,
@@ -51,16 +51,17 @@ namespace graph
             return variance;
         }
 
-        inline _impure_(double compute_weight(uint8_t g1, uint8_t g2, std::optional<double> sigma = std::nullopt))
+        inline _impure_(double compute_weight(uint8_t g1, uint8_t g2, std::optional<double> intensity_variance = std::nullopt))
         {
             const double diff = static_cast<double>(g1) - static_cast<double>(g2);
-            //return std::exp(-kBeta * diff * diff);
+            return std::exp(-kBeta * diff * diff);
 
-            const double normalized = sigma.has_value()
-                ? diff / (*sigma)
-                : diff;
+            const double beta
+                = intensity_variance.has_value()
+                ? 1.0 / (2.0 * *intensity_variance + 1e-12)
+                : kBeta;
 
-            return std::exp(-kBeta * normalized * normalized);
+            return std::exp(-beta * diff * diff);
         }
 
         _impure_(Eigen::SparseMatrix<double> build_laplacian(const Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic>& image))
@@ -68,7 +69,7 @@ namespace graph
             const int height = static_cast<int>(image.rows());
             const int width = static_cast<int>(image.cols());
             const int n = width * height;
-			const auto sigma = std::make_optional(std::sqrt(compute_intensity_variance(image)));
+			const auto intensity_variance = std::make_optional(compute_intensity_variance(image));
 
             auto index_at = [width](int row, int col) constexpr noexcept -> int {
                 return row * width + col;
@@ -97,7 +98,7 @@ namespace graph
                         const int j = index_at(ny, nx);
                         const uint8_t gj = image(ny, nx);
 
-                        const double w = compute_weight(gi, gj, sigma);
+                        const double w = compute_weight(gi, gj, intensity_variance);
                         weight_triplets.emplace_back(i, j, -w);
                         degrees[i] += w;
                     }
