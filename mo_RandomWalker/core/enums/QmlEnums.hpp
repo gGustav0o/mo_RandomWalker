@@ -12,8 +12,8 @@ class QmlEnums : public QObject
 
 public:
     enum SeedLabel_ {
-        Background = static_cast<int>(SeedLabel::Background),
-        Object = static_cast<int>(SeedLabel::Object)
+        Background = static_cast<int>(SeedLabel::Background)
+        , Object = static_cast<int>(SeedLabel::Object)
     };
     Q_ENUM(SeedLabel_)
 };

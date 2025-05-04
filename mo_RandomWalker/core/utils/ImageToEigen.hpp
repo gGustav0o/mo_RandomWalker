@@ -9,9 +9,9 @@
     const int height = image.height();
 
     Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic> result(height, width);
-    for (int y = 0; y < height; y++) {
+    for (size_t y = 0; y < height; y++) {
         const uchar* scan_line = image.constScanLine(y);
-        for (int x = 0; x < width; ++x) {
+        for (size_t x = 0; x < width; ++x) {
             result(y, x) = scan_line[x];
         }
     }

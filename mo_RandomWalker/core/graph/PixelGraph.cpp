@@ -52,10 +52,10 @@ namespace graph
     namespace
     {
         enum class Direction {
-            Right,
-            Down,
-            Left,
-            Up
+            Right
+            , Down
+            , Left
+            , Up
         };
 
         [[nodiscard]] constexpr std::pair<int, int> offset(Direction dir) noexcept
@@ -70,10 +70,10 @@ namespace graph
         }
 
         constexpr std::array<Direction, 4> kDirections = {
-            Direction::Right,
-            Direction::Down,
-            Direction::Left,
-            Direction::Up
+            Direction::Right
+            , Direction::Down
+            , Direction::Left
+            , Direction::Up
         };
 
         inline _pure_(bool is_inside(int y, int x, int height, int width))
@@ -89,8 +89,9 @@ namespace graph
 
 
         _impure_(Eigen::MatrixXd compute_local_variance(
-            const Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic>& image,
-            int window_size = 5
+            const Eigen::Matrix<uint8_t, Eigen::Dynamic
+            , Eigen::Dynamic>& image
+            , int window_size = 5
         ))
         {
             const int height = static_cast<int>(image.rows());
@@ -100,9 +101,9 @@ namespace graph
             Eigen::MatrixXd result = Eigen::MatrixXd::Zero(height, width);
             Eigen::MatrixXd float_image = image.cast<double>();
 
-            for (int y = 0; y < height; ++y)
+            for (size_t y = 0; y < height; ++y)
             {
-                for (int x = 0; x < width; ++x)
+                for (size_t x = 0; x < width; ++x)
                 {
                     int count = 0;
                     double sum = 0.0;
@@ -147,9 +148,9 @@ namespace graph
                 std::pair{-1, 0}, std::pair{1, 0}, std::pair{0, -1}, std::pair{0, 1}
             };
 
-            for (int y = 1; y < height - 1; ++y)
+            for (size_t y = 1; y < height - 1; ++y)
             {
-                for (int x = 1; x < width - 1; ++x)
+                for (size_t x = 1; x < width - 1; ++x)
                 {
                     double gx = float_image(y, x + 1) - float_image(y, x - 1);
                     double gy = float_image(y + 1, x) - float_image(y - 1, x);
@@ -187,9 +188,9 @@ namespace graph
 
             Eigen::VectorXd degrees = Eigen::VectorXd::Zero(n);
 
-            for (int y = 0; y < height; ++y)
+            for (size_t y = 0; y < height; ++y)
             {
-                for (int x = 0; x < width; ++x)
+                for (size_t x = 0; x < width; ++x)
                 {
                     const int i = index_at(y, x);
                     const uint8_t gi = image(y, x);
@@ -212,7 +213,7 @@ namespace graph
                 }
             }
 
-            for (int i = 0; i < n; ++i)
+            for (size_t i = 0; i < n; ++i)
             {
                 weight_triplets.emplace_back(i, i, degrees[i]);
             }

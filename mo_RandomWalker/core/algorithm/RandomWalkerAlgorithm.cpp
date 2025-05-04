@@ -29,9 +29,9 @@ namespace algorithm
         }
 
         [[nodiscard]] std::pair<MatrixXi, std::unordered_set<int>> build_label_matrix(
-            const std::vector<QPoint>& background,
-            const std::vector<QPoint>& object,
-            int height, int width) noexcept
+            const std::vector<QPoint>& background
+            , const std::vector<QPoint>& object
+            , int height, int width) noexcept
         {
             MatrixXi labels = MatrixXi::Zero(height, width);
             std::unordered_set<int> labeled;
@@ -51,8 +51,8 @@ namespace algorithm
         }
 
         [[nodiscard]] std::pair<std::vector<int>, std::unordered_map<int, int>> extract_unlabeled_indices(
-            int N,
-            const std::unordered_set<int>& labeled) noexcept
+            int N
+            , const std::unordered_set<int>& labeled) noexcept
         {
             std::vector<int> unlabeled;
             std::unordered_map<int, int> index_map;
@@ -70,10 +70,10 @@ namespace algorithm
         }
 
         [[nodiscard]] std::pair<SparseMatrix<double>, SparseMatrix<double>> split_laplacian(
-            const SparseMatrix<double>& L,
-            const std::unordered_set<int>& labeled,
-            const std::unordered_map<int, int>& label_index,
-            const std::unordered_map<int, int>& unlabeled_index) noexcept
+            const SparseMatrix<double>& L
+            , const std::unordered_set<int>& labeled
+            , const std::unordered_map<int, int>& label_index
+            , const std::unordered_map<int, int>& unlabeled_index) noexcept
         {
             const int n_u = static_cast<int>(unlabeled_index.size());
             const int n_l = static_cast<int>(label_index.size());
@@ -108,9 +108,9 @@ namespace algorithm
         }
 
         _impure_(VectorXd build_rhs_vector(
-            const MatrixXi& labels,
-            const std::vector<int>& label_vec,
-            int width))
+            const MatrixXi& labels
+            , const std::vector<int>& label_vec
+            , int width))
         {
             const int n_l = static_cast<int>(label_vec.size());
             VectorXd x_l(n_l);
@@ -125,9 +125,9 @@ namespace algorithm
         }
 
         _impure_throwing_(VectorXd solve_sparse_system(
-            const SparseMatrix<double>& L_uu,
-            const SparseMatrix<double>& L_ul,
-            const VectorXd& x_l))
+            const SparseMatrix<double>& L_uu
+            , const SparseMatrix<double>& L_ul
+            , const VectorXd& x_l))
         {
             Eigen::SimplicialLLT<SparseMatrix<double>> solver;
             solver.compute(L_uu);
@@ -140,12 +140,12 @@ namespace algorithm
         }
 
          Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic> assemble_segmentation(
-            const MatrixXi& labels,
-            const std::unordered_set<int>& labeled_indices,
-            const std::unordered_map<int, int>& unlabeled_index,
-            const VectorXd& x_u,
-            int width,
-            int height)
+            const MatrixXi& labels
+            , const std::unordered_set<int>& labeled_indices
+            , const std::unordered_map<int, int>& unlabeled_index
+            , const VectorXd& x_u
+            , int width
+            , int height)
         {
             Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic> result(height, width);
             const int N = width * height;
@@ -170,9 +170,10 @@ namespace algorithm
         }
 
          [[nodiscard]] Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic>
-             run_random_walker(const Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic>& image,
-                 const std::vector<QPoint>& background,
-                 const std::vector<QPoint>& object)
+             run_random_walker(
+                 const Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic>& image
+                 , const std::vector<QPoint>& background
+                 , const std::vector<QPoint>& object)
          {
              const int height = static_cast<int>(image.rows());
              const int width = static_cast<int>(image.cols());
@@ -193,7 +194,7 @@ namespace algorithm
 
              const std::vector<int> label_vec(labeled_indices.begin(), labeled_indices.end());
              std::unordered_map<int, int> label_index;
-             for (int i = 0; i < static_cast<int>(label_vec.size()); ++i)
+             for (size_t i = 0; i < static_cast<int>(label_vec.size()); ++i)
                  label_index[label_vec[i]] = i;
 
              const auto [L_uu, L_ul] = split_laplacian(L, labeled_indices, label_index, unlabeled_index);
@@ -225,9 +226,9 @@ namespace algorithm
     } // namespace
 
     RandomWalkerAlgorithm::RandomWalkerAlgorithm(
-        const Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic>& image,
-        const std::vector<QPoint>& background_seeds,
-        const std::vector<QPoint>& object_seeds)
+        const Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic>& image
+        , const std::vector<QPoint>& background_seeds
+        , const std::vector<QPoint>& object_seeds)
         : image_(image)
         , background_seeds_(background_seeds)
         , object_seeds_(object_seeds)

@@ -40,9 +40,9 @@ QImage RandomWalkerRunner::render_segmentation_result(const Eigen::Matrix<uint8_
 	constexpr QColor kColorBackground(255, 0, 255, 100);
 
 	QImage result(result_matrix.cols(), result_matrix.rows(), QImage::Format_ARGB32);
-	for (int y = 0; y < result.height(); ++y)
+	for (size_t y = 0; y < result.height(); ++y)
 	{
-		for (int x = 0; x < result.width(); ++x)
+		for (size_t x = 0; x < result.width(); ++x)
 		{
 			const QColor color = result_matrix(y, x) == 1 ? kColorObject : kColorBackground;
 			result.setPixelColor(x, y, color);
