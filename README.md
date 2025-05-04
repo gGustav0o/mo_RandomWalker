@@ -121,7 +121,7 @@ $$ m_i = \frac{1}{|C_i|} \sum_{(x, y) \in C_i} (x, y) $$
 ### Модификация весовой функции
 - Классический вес: $w_{ij} = \exp(-\beta (I_i - I_j)^2)$
 - Модифицированный вес с адаптивной $\beta$:
-    $$\beta = \frac{1}{2 \cdot \operatorname{Var}(I) + \varepsilon} \quad \Rightarrow \quad w_{ij} = \exp\left(- \frac{(I_i - I_j)^2}{2 \operatorname{Var}(I) + \varepsilon}\right)$$
+    $$\beta = \frac{1}{2 \cdot \mathrm{Var}(I) + \varepsilon} \quad \Rightarrow \quad w_{ij} = \exp\left(- \frac{(I_i - I_j)^2}{2 \operatorname{Var}(I) + \varepsilon}\right)$$
 
 ###  Альтернатива: использование градиентного поля
 
