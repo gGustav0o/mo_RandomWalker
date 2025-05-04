@@ -52,6 +52,11 @@ int ImageLoader::image_height() const noexcept
     return image_.height();
 }
 
+bool ImageLoader::has_image() const noexcept
+{
+    return !image_.isNull();
+}
+
 void ImageLoader::set_image_provider(ImageProvider* provider) noexcept
 {
     provider_ = provider;

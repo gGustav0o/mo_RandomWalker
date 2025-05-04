@@ -4,16 +4,19 @@
 void ImageData::update_from(const QImage& image)
 {
     matrix_ = image_to_matrix(image);
-    is_matrix_valid_ = true;
 }
 
 void ImageData::clear() noexcept
 {
-    matrix_ = Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic>();
-    is_matrix_valid_ = false;
+    matrix_ = std::nullopt;
 }
 
-Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic> ImageData::matrix() const
+bool ImageData::has_matrix() const noexcept
+{
+    return matrix_.has_value();
+}
+
+std::optional<Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic>> ImageData::maybe_matrix() const noexcept
 {
     return matrix_;
 }

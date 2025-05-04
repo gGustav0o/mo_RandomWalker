@@ -133,40 +133,6 @@ namespace graph
             return variance;
         }
 
-        inline _impure_(double compute_weight(uint8_t g1, uint8_t g2, std::optional<double> intensity_variance = std::nullopt))
-        {
-            const double diff = static_cast<double>(g1) - static_cast<double>(g2);
-            return std::exp(-kBeta * diff * diff);
-
-            const double beta
-                = intensity_variance.has_value()
-                ? 1.0 / (2.0 * *intensity_variance + 1e-12)
-                : kBeta;
-
-            return std::exp(-beta * diff * diff);
-        }
-
-        _impure_(double compute_weight_local_variance(
-            uint8_t g1
-            , uint8_t g2
-            , double local_variance_1
-            , double local_variance_2))
-        {
-            const double diff = static_cast<double>(g1) - static_cast<double>(g2);
-            const double sigma2 = 0.5 * (local_variance_1 + local_variance_2);
-            const double beta = 1.0 / (2.0 * sigma2 + eps::eps(sigma2));
-            return std::exp(-beta * diff * diff);
-        }
-
-        _impure_(double compute_weight_gradient(
-            double grad_magnitude_1
-            , double grad_magnitude_2
-            , double gamma = 40.0))
-        {
-            const double avg_grad = 0.5 * (grad_magnitude_1 + grad_magnitude_2);
-            return std::exp(-gamma / (avg_grad + eps::eps(avg_grad)));
-        }
-
         _impure_(Eigen::SparseMatrix<double> build_laplacian(const Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic>& image))
         {
             const int height = static_cast<int>(image.rows());
@@ -201,7 +167,7 @@ namespace graph
                         const int j = index_at(ny, nx);
                         const uint8_t gj = image(ny, nx);
 
-                        const double w = compute_weight(gi, gj, intensity_variance);
+                        const double w = weights::compute_weight(gi, gj, intensity_variance);
                         weight_triplets.emplace_back(i, j, -w);
                         degrees[i] += w;
                     }
@@ -216,6 +182,45 @@ namespace graph
             Eigen::SparseMatrix<double> L(n, n);
             L.setFromTriplets(weight_triplets.begin(), weight_triplets.end());
             return L;
+        }
+    }
+
+    namespace weights
+    {
+        namespace
+        {
+            inline _impure_(double compute_weight(uint8_t g1, uint8_t g2, std::optional<double> intensity_variance = std::nullopt))
+            {
+                const double diff = static_cast<double>(g1) - static_cast<double>(g2);
+
+                const double beta
+                    = intensity_variance.has_value()
+                    ? 1.0 / (2.0 * *intensity_variance + 1e-12)
+                    : kBeta;
+
+                return std::exp(-beta * diff * diff);
+            }
+
+            _impure_(double compute_weight_local_variance(
+                uint8_t g1
+                , uint8_t g2
+                , double local_variance_1
+                , double local_variance_2))
+            {
+                const double diff = static_cast<double>(g1) - static_cast<double>(g2);
+                const double sigma2 = 0.5 * (local_variance_1 + local_variance_2);
+                const double beta = 1.0 / (2.0 * sigma2 + eps::eps(sigma2));
+                return std::exp(-beta * diff * diff);
+            }
+
+            _impure_(double compute_weight_gradient(
+                double grad_magnitude_1
+                , double grad_magnitude_2
+                , double gamma = 40.0))
+            {
+                const double avg_grad = 0.5 * (grad_magnitude_1 + grad_magnitude_2);
+                return std::exp(-gamma / (avg_grad + eps::eps(avg_grad)));
+            }
         }
     }
 

@@ -6,7 +6,7 @@
 
 #include "../enums/SeedLabel.hpp" 
 
-inline void register_qml_types()
+_cold_ static inline int register_qml_types()
 {
-    qmlRegisterUncreatableType<QmlEnums>("App.Enums", 1, 0, "SeedLabel", "Enum only");
+    return qmlRegisterUncreatableType<QmlEnums>("App.Enums", 1, 0, "SeedLabel", "Enum only");
 }

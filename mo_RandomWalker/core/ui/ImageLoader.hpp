@@ -24,6 +24,7 @@ public:
     [[nodiscard]] QImage image() const noexcept;
     [[nodiscard]] int image_width() const noexcept;
     [[nodiscard]] int image_height() const noexcept;
+    [[nodiscard]] bool has_image() const noexcept;
     void set_image_provider(_In_opt_ ImageProvider* provider) noexcept;
 
 signals:

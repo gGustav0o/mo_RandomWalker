@@ -43,22 +43,6 @@ struct Pure<Ret(Args...)>
 	}
 };
 
-#define FORWARD_FN(name)                                                    \
-    template <typename... Args>                                             \
-    decltype(auto) name(Args&&... args) const                               \
-        noexcept(noexcept(dialectTraits.name(std::forward<Args>(args)...))) \
-    {                                                                       \
-        return dialectTraits.name(std::forward<Args>(args)...);             \
-    }
-
-#define FORWARD_SUB_FN(outer, name)                                               \
-    template <typename... Args>                                                   \
-    decltype(auto) name(Args&&... args) const                                     \
-        noexcept(noexcept(dialectTraits.outer.name(std::forward<Args>(args)...))) \
-    {                                                                             \
-        return dialectTraits.outer.name(std::forward<Args>(args)...);             \
-    }
-
 #define NAME_OF(var) #var
 
 #define STR_ENUM(EnumName, ...) \

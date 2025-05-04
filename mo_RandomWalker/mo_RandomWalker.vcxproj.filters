@@ -30,14 +30,8 @@
     <Filter Include="core\utils">
       <UniqueIdentifier>{286267f3-22cf-456c-8231-99115b97a3cf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="core\solver">
-      <UniqueIdentifier>{bf204f7b-c981-4eff-84ec-1e24006d54b4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="core\interface">
       <UniqueIdentifier>{97f83e4d-c766-45fa-914e-2166d0181961}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="core\segmentation">
-      <UniqueIdentifier>{dff894cc-ed17-41ed-9877-a33ff8e78d73}</UniqueIdentifier>
     </Filter>
     <Filter Include="core\graph">
       <UniqueIdentifier>{d9fbbe20-4876-4ffb-9abd-b91aca3cdf05}</UniqueIdentifier>
@@ -71,9 +65,6 @@
     <QtRcc Include="qml.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
-    <ClCompile Include="core\solver\LaplacianSolver.cpp">
-      <Filter>core\solver</Filter>
-    </ClCompile>
     <ClCompile Include="core\interface\RandomWalkerRunner.cpp">
       <Filter>core\interface</Filter>
     </ClCompile>
@@ -95,11 +86,11 @@
     <ClCompile Include="core\scene\SceneManager.cpp">
       <Filter>core\scene</Filter>
     </ClCompile>
-    <ClCompile Include="core\app\connect_components.cpp">
-      <Filter>core\app</Filter>
-    </ClCompile>
     <ClCompile Include="core\ui\SegmentationImageProvider.cpp">
       <Filter>core\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="core\app\AppContext.cpp">
+      <Filter>core\app</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -111,12 +102,6 @@
     </ClInclude>
     <ClInclude Include="core\utils\ImageToEigen.hpp">
       <Filter>core\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="core\solver\LaplacianSolver.hpp">
-      <Filter>core\solver</Filter>
-    </ClInclude>
-    <ClInclude Include="core\segmentation\SegmentationResult.hpp">
-      <Filter>core\segmentation</Filter>
     </ClInclude>
     <ClInclude Include="core\graph\PixelGraph.hpp">
       <Filter>core\graph</Filter>
@@ -141,6 +126,9 @@
     </ClInclude>
     <ClInclude Include="core\ui\SegmentationImageProvider.hpp">
       <Filter>core\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="core\qml\qml_names.hpp">
+      <Filter>core\qml</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -9,6 +9,7 @@
 #include <unordered_set>
 #include <unordered_map>
 #include <iostream>
+#include <ranges>
 
 namespace algorithm
 {
@@ -22,7 +23,7 @@ namespace algorithm
 
     namespace
     {
-        [[nodiscard]] inline int flatten(int row, int col, int width) noexcept
+        _pure_(int flatten(int row, int col, int width))
         {
             return row * width + col;
         }
@@ -56,7 +57,7 @@ namespace algorithm
             std::vector<int> unlabeled;
             std::unordered_map<int, int> index_map;
 
-            for (int i = 0; i < N; ++i)
+            for (size_t i = 0; i < N; ++i)
             {
                 if (!labeled.contains(i))
                 {
@@ -82,7 +83,7 @@ namespace algorithm
 
             std::vector<Eigen::Triplet<double>> triplets_uu, triplets_ul;
 
-            for (int k = 0; k < L.outerSize(); ++k)
+            for (size_t k = 0; k < L.outerSize(); ++k)
             {
                 for (SparseMatrix<double>::InnerIterator it(L, k); it; ++it)
                 {
@@ -106,14 +107,14 @@ namespace algorithm
             return { L_uu, L_ul };
         }
 
-        [[nodiscard]] VectorXd build_rhs_vector(
+        _impure_(VectorXd build_rhs_vector(
             const MatrixXi& labels,
             const std::vector<int>& label_vec,
-            int width) noexcept
+            int width))
         {
             const int n_l = static_cast<int>(label_vec.size());
             VectorXd x_l(n_l);
-            for (int i = 0; i < n_l; ++i)
+            for (size_t i = 0; i < n_l; ++i)
             {
                 const int index = label_vec[i];
                 const int row = index / width;
@@ -123,21 +124,22 @@ namespace algorithm
             return x_l;
         }
 
-        [[nodiscard]] VectorXd solve_sparse_system(
+        _impure_throwing_(VectorXd solve_sparse_system(
             const SparseMatrix<double>& L_uu,
             const SparseMatrix<double>& L_ul,
-            const VectorXd& x_l)
+            const VectorXd& x_l))
         {
             Eigen::SimplicialLLT<SparseMatrix<double>> solver;
             solver.compute(L_uu);
             if (solver.info() != Eigen::Success) {
                 qDebug() << "[RW] ERROR: Failed to decompose L_uu!";
+                return VectorXd::Zero(L_uu.rows());
             }
             auto result = solver.solve(-L_ul * x_l);
             return result;
         }
 
-        [[nodiscard]] Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic> assemble_segmentation(
+         Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic> assemble_segmentation(
             const MatrixXi& labels,
             const std::unordered_set<int>& labeled_indices,
             const std::unordered_map<int, int>& unlabeled_index,
@@ -148,7 +150,7 @@ namespace algorithm
             Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic> result(height, width);
             const int N = width * height;
 
-            for (int i = 0; i < N; ++i)
+            for (size_t i = 0; i < N; ++i)
             {
                 int row = i / width;
                 int col = i % width;
@@ -166,6 +168,60 @@ namespace algorithm
 
             return result;
         }
+
+         [[nodiscard]] Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic>
+             run_random_walker(const Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic>& image,
+                 const std::vector<QPoint>& background,
+                 const std::vector<QPoint>& object)
+         {
+             const int height = static_cast<int>(image.rows());
+             const int width = static_cast<int>(image.cols());
+             const int N = width * height;
+
+             qDebug() << "[RW] Image size: " << width << "x" << height << ", total pixels: " << N;
+
+             PixelGraph graph(image);
+             const SparseMatrix<double> L = graph.laplacian();
+
+             const auto [labels, labeled_indices] = build_label_matrix(background, object, height, width);
+             qDebug() << "[RW] Background seeds: " << background.size()
+                 << ", Object seeds: " << object.size();
+             qDebug() << "[RW] Labeled pixels: " << labeled_indices.size();
+
+             const auto [unlabeled_indices, unlabeled_index] = extract_unlabeled_indices(N, labeled_indices);
+             qDebug() << "[RW] Unlabeled pixels: " << unlabeled_indices.size();
+
+             const std::vector<int> label_vec(labeled_indices.begin(), labeled_indices.end());
+             std::unordered_map<int, int> label_index;
+             for (int i = 0; i < static_cast<int>(label_vec.size()); ++i)
+                 label_index[label_vec[i]] = i;
+
+             const auto [L_uu, L_ul] = split_laplacian(L, labeled_indices, label_index, unlabeled_index);
+             const VectorXd x_l = build_rhs_vector(labels, label_vec, width);
+             const VectorXd x_u = solve_sparse_system(L_uu, L_ul, x_l);
+             if (!x_u.allFinite()) {
+                 qDebug() << "[RW] ERROR: x_u contains invalid values!";
+             }
+
+             const double min_val = x_u.minCoeff();
+             const double max_val = x_u.maxCoeff();
+             const double avg_val = x_u.mean();
+
+             qDebug() << "[RW] x_u stats: min = " << min_val
+                 << ", max = " << max_val
+                 << ", mean = " << avg_val;
+
+             auto result = assemble_segmentation(labels, labeled_indices, unlabeled_index, x_u, width, height);
+
+             int count_zeros = (result.array() == 0).count();
+             int count_ones = (result.array() == 1).count();
+
+             qDebug() << "[RW] Result matrix: zeros = " << count_zeros
+                 << " , ones = " << count_ones;
+
+             return result;
+         }
+
     } // namespace
 
     RandomWalkerAlgorithm::RandomWalkerAlgorithm(
@@ -180,52 +236,7 @@ namespace algorithm
 
     Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic> RandomWalkerAlgorithm::run() const
     {
-        const int height = static_cast<int>(image_.rows());
-        const int width = static_cast<int>(image_.cols());
-        const int N = width * height;
-
-        qDebug() << "[RW] Image size: " << width << "x" << height << ", total pixels: " << N;
-
-        PixelGraph graph(image_);
-        const SparseMatrix<double> L = graph.laplacian();
-
-        const auto [labels, labeled_indices] = build_label_matrix(background_seeds_, object_seeds_, height, width);
-        qDebug() << "[RW] Background seeds: " << background_seeds_.size()
-            << ", Object seeds: " << object_seeds_.size();
-        qDebug() << "[RW] Labeled pixels: " << labeled_indices.size();
-
-        const auto [unlabeled_indices, unlabeled_index] = extract_unlabeled_indices(N, labeled_indices);
-        qDebug() << "[RW] Unlabeled pixels: " << unlabeled_indices.size();
-
-        std::vector<int> label_vec(labeled_indices.begin(), labeled_indices.end());
-        std::unordered_map<int, int> label_index;
-        for (int i = 0; i < static_cast<int>(label_vec.size()); ++i)
-            label_index[label_vec[i]] = i;
-
-        const auto [L_uu, L_ul] = split_laplacian(L, labeled_indices, label_index, unlabeled_index);
-        const VectorXd x_l = build_rhs_vector(labels, label_vec, width);
-        const VectorXd x_u = solve_sparse_system(L_uu, L_ul, x_l);
-        if (!x_u.allFinite()) {
-            qDebug() << "[RW] ERROR: x_u contains invalid values!";
-        }
-
-        const double min_val = x_u.minCoeff();
-        const double max_val = x_u.maxCoeff();
-        const double avg_val = x_u.mean();
-
-        qDebug() << "[RW] x_u stats: min = " << min_val
-            << ", max = " << max_val
-            << ", mean = " << avg_val;
-
-        auto result = assemble_segmentation(labels, labeled_indices, unlabeled_index, x_u, width, height);
-
-        int count_zeros = (result.array() == 0).count();
-        int count_ones = (result.array() == 1).count();
-
-        qDebug() << "[RW] Result matrix: zeros = " << count_zeros
-            << " , ones = " << count_ones;
-
-        return result;
+		return run_random_walker(image_, background_seeds_, object_seeds_);
     }
 
     Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> RandomWalkerAlgorithm::run_probabilities() const

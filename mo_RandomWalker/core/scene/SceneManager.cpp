@@ -61,6 +61,11 @@ QImage SceneManager::segmentation_result() const noexcept
 	return segmentation_result_;
 }
 
+bool SceneManager::has_image() const noexcept
+{
+    return image_data_.has_matrix();
+}
+
 
 void SceneManager::set_segmentation_result(const QImage& result)
 {

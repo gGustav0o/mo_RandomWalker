@@ -16,5 +16,8 @@ public slots:
     void start_segmentation();
 
 private:
+    std::optional<Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic>> compute_segmentation() const;
+    QImage render_segmentation_result(const Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic>& result_matrix) const;
+
     SceneManager* scene_manager_ = nullptr;
 };

@@ -26,6 +26,8 @@ public:
 	[[nodiscard]] std::vector<QPoint> background_seeds() const noexcept;
 	[[nodiscard]] std::vector<QPoint> object_seeds() const noexcept;
 	[[nodiscard]] QImage segmentation_result() const noexcept;
+	[[nodiscard]] bool has_image() const noexcept;
+
 	void set_segmentation_result(const QImage& result);
 
 signals:

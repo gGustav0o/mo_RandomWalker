@@ -100,12 +100,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="core\algorithm\RandomWalkerAlgorithm.cpp" />
-    <ClCompile Include="core\app\connect_components.cpp" />
+    <ClCompile Include="core\app\AppContext.cpp" />
     <ClCompile Include="core\data\ImageData.cpp" />
     <ClCompile Include="core\graph\PixelGraph.cpp" />
     <ClCompile Include="core\interface\RandomWalkerRunner.cpp" />
     <ClCompile Include="core\scene\SceneManager.cpp" />
-    <ClCompile Include="core\solver\LaplacianSolver.cpp" />
     <ClCompile Include="core\ui\ImageLoader.cpp" />
     <ClCompile Include="core\ui\ImageProvider.cpp" />
     <ClCompile Include="core\ui\SegmentationImageProvider.cpp" />
@@ -121,9 +120,8 @@
     <ClInclude Include="core\graph\PixelGraph.hpp" />
     <QtMoc Include="core\interface\RandomWalkerRunner.hpp" />
     <QtMoc Include="core\scene\SceneManager.hpp" />
+    <ClInclude Include="core\qml\qml_names.hpp" />
     <ClInclude Include="core\qml\qml_registration.hpp" />
-    <ClInclude Include="core\segmentation\SegmentationResult.hpp" />
-    <ClInclude Include="core\solver\LaplacianSolver.hpp" />
     <QtMoc Include="core\ui\ImageLoader.hpp" />
     <ClInclude Include="core\ui\ImageProvider.hpp" />
     <ClInclude Include="core\ui\SegmentationImageProvider.hpp" />

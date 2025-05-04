@@ -5,47 +5,48 @@ RandomWalkerRunner::RandomWalkerRunner(SceneManager* scene_manager, QObject* par
 
 void RandomWalkerRunner::start_segmentation()
 {
-	const auto image_matrix = scene_manager_->image_data().matrix();
+	const auto result = compute_segmentation();
+	if (!result.has_value()) {
+		qWarning() << "[RandomWalker] Segmentation aborted: no image available.";
+		return;
+	}
+
+	const auto& result_matrix = *result;
+
+	const int zero_count = (result_matrix.array() == 0).count();
+	const int one_count = (result_matrix.array() == 1).count();
+	qDebug() << "[RandomWalker] Result matrix: zeros =" << zero_count << ", ones =" << one_count;
+
+	const QImage rendered = render_segmentation_result(result_matrix);
+	scene_manager_->set_segmentation_result(rendered);
+}
+
+std::optional<Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic>> RandomWalkerRunner::compute_segmentation() const
+{
+	const auto maybe_image = scene_manager_->image_data().maybe_matrix();
+	if (!maybe_image.has_value()) return std::nullopt;
+
+	const auto& image_matrix = *maybe_image;
 	const auto background = scene_manager_->background_seeds();
 	const auto object = scene_manager_->object_seeds();
 
 	algorithm::RandomWalkerAlgorithm algorithm(image_matrix, background, object);
-	const auto result_matrix = algorithm.run();
+	return algorithm.run();
+}
 
-	/*QImage result(result_matrix.cols(), result_matrix.rows(), QImage::Format_Grayscale8);
-	for (int y = 0; y < result.height(); ++y)
-	{
-		uchar* line = result.scanLine(y);
-		for (int x = 0; x < result.width(); ++x)
-			line[x] = result_matrix(y, x);
-	}*/
-
-	int zero_count = 0;
-	int one_count = 0;
-	for (int y = 0; y < result_matrix.rows(); ++y)
-	{
-		for (int x = 0; x < result_matrix.cols(); ++x)
-		{
-			if (result_matrix(y, x) == 0)
-				++zero_count;
-			else if (result_matrix(y, x) == 1)
-				++one_count;
-		}
-	}
-	qDebug() << "Result matrix: zeros =" << zero_count << ", ones =" << one_count;
+QImage RandomWalkerRunner::render_segmentation_result(const Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic>& result_matrix) const
+{
+	constexpr QColor kColorObject(0, 255, 0, 100);
+	constexpr QColor kColorBackground(255, 0, 255, 100);
 
 	QImage result(result_matrix.cols(), result_matrix.rows(), QImage::Format_ARGB32);
 	for (int y = 0; y < result.height(); ++y)
 	{
 		for (int x = 0; x < result.width(); ++x)
 		{
-			int alpha = 100;
-			if (result_matrix(y, x) == 1)
-				result.setPixelColor(x, y, QColor(0, 255, 0, alpha));
-			else
-				result.setPixelColor(x, y, QColor(255, 0, 255, alpha));
+			const QColor color = result_matrix(y, x) == 1 ? kColorObject : kColorBackground;
+			result.setPixelColor(x, y, color);
 		}
 	}
-
-	scene_manager_->set_segmentation_result(result);
+	return result;
 }

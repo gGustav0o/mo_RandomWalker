@@ -16,4 +16,7 @@ struct AppContext
 	SegmentationImageProvider* segmentation_image_provider = nullptr;
 	RandomWalkerRunner* random_walker_runner = nullptr;
     QQmlApplicationEngine* engine = nullptr;
+    _cold_ void connect_components();
+    _cold_ void register_qml_context();
+    _cold_ void initialize(QQmlApplicationEngine* engine_);
 };
