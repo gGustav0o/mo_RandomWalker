@@ -220,4 +220,5 @@ $$ \text{label}(i) = \arg\max_k x_u^{(k)}(i)$$
 
 ## Лицензия
 
-MIT License
+BSD 3-Clause License
+
