@@ -8,7 +8,9 @@
 
 namespace graph
 {
+    //static constexpr double kBeta = 0.001;
     static constexpr double kBeta = 0.05;
+    //static constexpr double kBeta = 0.085;
     namespace weights
     {
         namespace

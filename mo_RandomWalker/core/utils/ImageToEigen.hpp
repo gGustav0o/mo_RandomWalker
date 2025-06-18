@@ -3,7 +3,7 @@
 #include <QImage>
 #include <Eigen/Core>
 
-[[nodiscard]] inline auto image_to_matrix(const QImage& image) -> Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic>
+[[nodiscard]] auto image_to_matrix(const QImage& image) -> Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic>
 {
     const int width = image.width();
     const int height = image.height();
