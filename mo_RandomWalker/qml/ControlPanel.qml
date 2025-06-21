@@ -5,7 +5,6 @@ import QtQuick.Dialogs
 import App.Enums
 
 RowLayout {
-    id: controlPanel
     spacing: 10
     Layout.alignment: Qt.AlignLeft
 

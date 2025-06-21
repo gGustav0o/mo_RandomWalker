@@ -3,5 +3,8 @@
         <file>qml/RandomWalker.qml</file>
         <file>qml/ControlPanel.qml</file>
         <file>qml/SegmentationView.qml</file>
+        <file>qml/DrawOverlay.qml</file>
+        <file>qml/SeedLayer.qml</file>
+        <file>qml/RectSeedMouseArea.qml</file>
     </qresource>
 </RCC>

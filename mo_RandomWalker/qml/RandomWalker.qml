@@ -56,6 +56,7 @@ Window {
         }
         SegmentationView {
             id: segmentationView
+            hasUserImage: hasUserImage
             onAddRectSeedArea: function(x, y, width, height, type) {
                 SceneManager.add_rect_seed_area(Qt.rect(x, y, width, height), type)
             }
