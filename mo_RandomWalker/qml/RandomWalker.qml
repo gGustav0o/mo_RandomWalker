@@ -11,68 +11,39 @@ Window {
     height: 700
     visible: true
     title: "Random Walker Segmentation"
-
+    property bool hasUserImage: false
     ColumnLayout {
         anchors.fill: parent
         spacing: 10
 
-        RowLayout {
-            spacing: 10
-            Layout.alignment: Qt.AlignLeft
+        ControlPanel {
+            id: controlPanel
+            fileDialog: fileDialog
+            hasUserImage: hasUserImage
 
-            Button {
-                text: "Load Image"
-                onClicked: fileDialog.open()
+            Binding {
+                target: controlPanel
+                property: "hasUserImage"
+                value: hasUserImage
             }
-
-            Button {
-                text: "Clear"
-                onClicked: {
-                    ImageLoader.clear_image()
-                    hasUserImage = false
-                    segmentationOverlay.source = ""
-                    SceneManager.clear_seeds()
-                    backgroundRects.clear()
-                    objectRects.clear()
-                }
+            onClearImage: {
+                ImageLoader.clear_image()
+                hasUserImage = false
+                segmentationOverlay.source = ""
+                SceneManager.clear_seeds()
+                backgroundRects.clear()
+                objectRects.clear()
             }
-            Button {
-                text: "Clear seeds"
-                onClicked: {
-                    segmentationOverlay.source = ""
-                    SceneManager.clear_seeds()
-                    backgroundRects.clear()
-                    objectRects.clear()
-                }
+            onClearSeeds: {
+                segmentationOverlay.source = ""
+                SceneManager.clear_seeds()
+                backgroundRects.clear()
+                objectRects.clear()
             }
-            ListModel {
-                id: labelModel
-                ListElement { text: "Background"; value: 0 }  // == SeedLabel.Background
-                ListElement { text: "Object"; value: 1 }      // == SeedLabel.Object
+            onRunSegmentation: {
+                randomWalkerRunner.start_segmentation()
             }
-            ComboBox {
-                id: labelCombo
-                model: labelModel
-                textRole: "text"
-                enabled: hasUserImage
-            
-                Component.onCompleted: {
-                    selectedLabel = labelModel.get(currentIndex).value
-                }
-            
-                onCurrentIndexChanged: {
-                    selectedLabel = labelModel.get(currentIndex).value
-                }
-            }
-
-            Button {
-                text: "Run Algorithm"
-                enabled: canRun
-                onClicked: {
-                    if (canRun)
-                        onClicked: randomWalkerRunner.start_segmentation()
-                }
-            }
+            onLabelChanged: selectedLabel = value
         }
         Rectangle {
             id: imageContainer
@@ -92,11 +63,8 @@ Window {
             }
             Image {
                 id: segmentationOverlay
-                //anchors.fill: imageDisplay
-                //fillMode: Image.Stretch
                 anchors.fill: imageDisplay
                 source: "image://segmentation/mask"
-                //visible: SceneManager.segmentationResult.width > 0
             }
             Connections {
                 target: SceneManager
@@ -246,12 +214,13 @@ Window {
         //currentFolder: StandardPaths.pictures
         nameFilters: ["Images (*.png *.jpg *.jpeg *.bmp)"]
         onAccepted: {
+            console.log("Setting hasUserImage = true")
             ImageLoader.load_image(selectedFile)
             hasUserImage = true
         }
     }
 
-    property bool hasUserImage: false
+
     property int selectedLabel: SeedLabel.Object
     property string loaderSource: "image://loader/preview"
     ListModel { id: backgroundRects }
