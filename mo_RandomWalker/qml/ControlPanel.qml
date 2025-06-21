@@ -11,15 +11,23 @@ RowLayout {
 
     signal clearImage()
     signal clearSeeds()
+    signal loadImage()
     signal runSegmentation()
-    signal labelChanged(int value)
+    signal labelChanged(int label)
 
-    property bool hasUserImage
-    property var fileDialog
+    function setLabelComboEnabled(enabled) {
+        labelCombo.enabled = enabled
+    }
+    function setSegmentationButtonEnabled(enabled) {
+        segmentationButton.enabled = enabled
+    }
+    function currentLabelValue() {
+        return labelModel.get(labelCombo.currentIndex).value
+    }
 
     Button {
         text: "Load Image"
-        onClicked: fileDialog.open()
+        onClicked: loadImage()
     }
 
     Button {
@@ -42,16 +50,19 @@ RowLayout {
         id: labelCombo
         model: labelModel
         textRole: "text"
-        enabled: hasUserImage
+        Binding {
+            target: labelCombo
+            property: "enabled"
+            value: hasUserImage
+        }
 
         onCurrentIndexChanged: {
-            let newValue = labelModel.get(currentIndex).value
-            labelChanged(newValue)
+            labelChanged(labelModel.get(currentIndex).value)
         }
 	}
     Button {
+        id: segmentationButton
         text: "Run Algorithm"
-        enabled: canRun
         onClicked: runSegmentation()
     }
 }

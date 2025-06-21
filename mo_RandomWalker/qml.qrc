@@ -2,5 +2,6 @@
     <qresource prefix="/qt/qml/mo_randomwalker">
         <file>qml/RandomWalker.qml</file>
         <file>qml/ControlPanel.qml</file>
+        <file>qml/SegmentationView.qml</file>
     </qresource>
 </RCC>
