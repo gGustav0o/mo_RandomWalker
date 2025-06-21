@@ -68,7 +68,7 @@ Window {
         }
         Connections {
             target: SceneManager
-            onSegmentationResultChanged: {
+            function onSegmentationResultChanged() {
                 segmentationView.updateSegmentationOverlay("image://segmentation/mask?" + Date.now())
             }
         }

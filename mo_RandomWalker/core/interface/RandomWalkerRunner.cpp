@@ -30,8 +30,7 @@ std::optional<Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic>> RandomWalk
 	const auto background = scene_manager_->background_seeds();
 	const auto object = scene_manager_->object_seeds();
 
-	algorithm::RandomWalkerAlgorithm algorithm(image_matrix, background, object);
-	return algorithm.run();
+	return algorithm::run_random_walker(image_matrix, background, object);
 }
 
 QImage RandomWalkerRunner::render_segmentation_result(const Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic>& result_matrix) const
